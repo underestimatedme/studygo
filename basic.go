@@ -86,4 +86,5 @@ func defType() {
 func main() {
 	//defVar()
 	defReference()
+	defType()
 }
