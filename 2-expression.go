@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+	"runtime/debug"
+)
 
 /**
  * go的25个关键字如下:
@@ -106,6 +110,46 @@ func exec(f func(x, y int) int, x int, y int) int {
 	return f(x, y)
 }
 
+// 指针是go与其他语言最显著的区别
+func testPointer() *int {
+	a := 10
+	return &a
+}
+
+// 匿名函数, 和js基本一样
+func testAnonymous() {
+	func(s string) {
+		fmt.Println(s)
+	}("test it")
+	add := func(x, y int) int {
+		return x + y
+	}
+	fmt.Println(add(1, 2))
+}
+
+// 闭包closure，defer todo:暂时省略
+
+// 错误处理 error handle
+// 此处的error为官方接口
+func div(x, y int) (int, error) {
+	if y == 0 {
+		return 0, errors.New("divide by zero")
+	}
+	return x / y, nil
+}
+
+// panic-recover-类似于try...catch...，但是感觉比try catch难用很多
+func testPanic() {
+	defer func() {
+		if err := recover(); err != nil {
+			debug.PrintStack()
+		}
+	}()
+	panic("holy shit")
+	// 下面这句执行不到了
+	fmt.Println("test shit")
+}
+
 func main() {
 	defIncrement()
 	defInit()
@@ -113,4 +157,8 @@ func main() {
 	defIf()
 	defFor()
 	fmt.Println(exec(add, 1, 2))
+	testAnonymous()
+	res, err := div(1, 0)
+	fmt.Println(res, err)
+	testPanic()
 }
